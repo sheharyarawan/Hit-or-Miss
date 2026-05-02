@@ -17,6 +17,6 @@ data class Player(
 
     val imageUrl: String?,
 
-    val dateOfBirth: String?,
-    val placeOfBirth: String?
+//    val dateOfBirth: String?,
+  //  val placeOfBirth: String?
 )

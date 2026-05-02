@@ -18,18 +18,6 @@ interface PlayerDao {
     @Query("SELECT COUNT(*) FROM players")
     suspend fun getPlayerCount(): Int
 
-    @Query("SELECT * FROM players WHERE role = 'Batsman'")
-    suspend fun getBatsmen(): List<Player>
-
-    @Query("SELECT * FROM players WHERE role = 'Bowler'")
-    suspend fun getBowlers(): List<Player>
-
-    @Query("SELECT * FROM players WHERE role = 'WicketKeeper'")
-    suspend fun getWicketKeepers(): List<Player>
-
-    @Query("SELECT * FROM players WHERE role = 'Allrounder'")
-    suspend fun getAllrounders(): List<Player>
-
     @Query("SELECT * FROM players WHERE role IN (:roles)")
     suspend fun getPlayersByRoles(roles: List<String>): List<Player>
 }
