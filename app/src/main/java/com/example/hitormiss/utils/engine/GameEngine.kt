@@ -35,6 +35,8 @@ class GameEngine(
             category = category,
             playerA = playerA,
             playerB = playerB,
+            playerAStats = statsA,
+            playerBStats = statsB,
             questionText = buildQuestionText(category)
         )
     }

@@ -14,6 +14,7 @@ class GameViewModel(
 
     private val _state = MutableLiveData(GameState())
     val state: LiveData<GameState> = _state
+    private var currentCategory: StatCategory? = null
 
     fun loadQuestion(category: StatCategory) {
 
@@ -59,5 +60,18 @@ class GameViewModel(
         _state.value = current.copy(
             score = newScore
         )
+    }
+
+
+
+    fun startGame(category: StatCategory) {
+        currentCategory = category
+        loadQuestion(category)
+    }
+
+    fun nextQuestion() {
+        currentCategory?.let {
+            loadQuestion(it)
+        }
     }
 }
