@@ -3,6 +3,7 @@ package com.example.hitormiss.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.example.hitormiss.R
 import com.example.hitormiss.databinding.FragmentHomeScreenBinding
 import com.example.hitormiss.utils.engine.StatCategory
@@ -53,10 +54,10 @@ class HomeScreenFragment : Fragment(R.layout.fragment_home_screen) {
             putString("category", category.name)
         }
 
-        /*        findNavController().navigate(
-            R.id.action_homeFragment_to_gameFragment,
+             findNavController().navigate(
+            R.id.action_homeScreenFragment_to_gameFragment,
             bundle
-        )*/
+        )
     }
 
     override fun onDestroyView() {

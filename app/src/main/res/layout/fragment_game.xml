@@ -80,7 +80,7 @@
             android:id="@+id/rLayoutA"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="">
+            android:background="@mipmap/ic_launcher">
 
             <LinearLayout
                 android:id="@+id/chipContainerA"
@@ -100,8 +100,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
 
-                    app:chipBackgroundColor="#9D000000"
-                    app:chipTextColor="@android:color/white" />
+                    app:chipBackgroundColor="#9D000000" />
 
 
                 <com.google.android.material.chip.Chip
@@ -114,7 +113,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:chipBackgroundColor="#9D000000"
-                    app:chipTextColor="@android:color/white" />
+                    />
 
             </LinearLayout>
 
@@ -139,7 +138,7 @@
             android:id="@+id/rLayoutB"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="">
+            android:background="@mipmap/ic_launcher">
 
             <LinearLayout
                 android:id="@+id/chipContainerB"
@@ -159,7 +158,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:chipBackgroundColor="#9D000000"
-                    app:chipTextColor="@android:color/white" />
+                   />
 
 
                 <com.google.android.material.chip.Chip
@@ -172,7 +171,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:chipBackgroundColor="#9D000000"
-                    app:chipTextColor="@android:color/white" />
+                    />
 
             </LinearLayout>
 

@@ -6,8 +6,11 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.hitormiss.R
+import com.example.hitormiss.data.repository.PlayerRepository
 import com.example.hitormiss.data.viewmodel.GameViewModel
+import com.example.hitormiss.data.viewmodel.GameViewModelFactory
 import com.example.hitormiss.databinding.FragmentGameBinding
+import com.example.hitormiss.utils.engine.GameEngine
 import com.example.hitormiss.utils.engine.StatCategory
 
 class GameFragment : Fragment(R.layout.fragment_game) {
@@ -15,9 +18,20 @@ class GameFragment : Fragment(R.layout.fragment_game) {
     private var _binding: FragmentGameBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: GameViewModel by viewModels()
-
     private var selectedSide: String? = null
+
+    // ⚠️ TEMP: replace with DI later (Hilt recommended)
+    private val viewModel: GameViewModel by viewModels {
+        GameViewModelFactory(
+            GameEngine(
+                PlayerRepository(
+                    api = (requireActivity().application as MyApp).api,
+                    playerDao = (requireActivity().application as MyApp).playerDao,
+                    statsDao = (requireActivity().application as MyApp).statsDao
+                )
+            )
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,15 +39,17 @@ class GameFragment : Fragment(R.layout.fragment_game) {
         _binding = FragmentGameBinding.bind(view)
 
         val categoryString = arguments?.getString("category")
-        val category = StatCategory.valueOf(categoryString!!)
+        val category = categoryString?.let {
+            StatCategory.valueOf(it)
+        } ?: return
 
-        setupClicks()
+        setupClicks(category)
         observeState()
 
         viewModel.startGame(category)
     }
 
-    private fun setupClicks() {
+    private fun setupClicks(category: StatCategory) {
 
         binding.cardViewSelectA.setOnClickListener {
             selectedSide = "A"
@@ -45,19 +61,22 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 
         binding.confirmButton.setOnClickListener {
 
-            val question = viewModel.state.value?.question ?: return@setOnClickListener
+            val state = viewModel.state.value ?: return@setOnClickListener
+            val question = state.question ?: return@setOnClickListener
 
-            val selectedPlayer =
-                if (selectedSide == "A") question.playerA else question.playerB
+            if (selectedSide == null) return@setOnClickListener
 
-            val isCorrect = checkAnswer(question, selectedSide!!)
+            val isCorrect = viewModel.checkAnswer(
+                question,
+                selectedSide!!
+            )
 
             viewModel.updateScore(isCorrect)
 
-            showResult(isCorrect)
+            showResult(isCorrect, selectedSide!!)
 
             binding.root.postDelayed({
-                viewModel.nextQuestion()
+                viewModel.loadQuestion(category)
                 resetUI()
             }, 1000)
         }
@@ -86,30 +105,24 @@ class GameFragment : Fragment(R.layout.fragment_game) {
         }
     }
 
-    private fun checkAnswer(question: com.example.hitormiss.utils.engine.GameQuestion, selected: String): Boolean {
+    private fun showResult(correct: Boolean, selected: String) {
 
-        val a = question.playerAStats
-        val b = question.playerBStats
+        val correctColor = Color.parseColor("#4CAF50")
+        val wrongColor = Color.parseColor("#F44336")
 
-        val correct = when (question.category) {
-
-            StatCategory.RUNS -> a.runs > b.runs
-            StatCategory.SIXES -> a.sixes > b.sixes
-            StatCategory.FOURS -> a.fours > b.fours
-            StatCategory.WICKETS -> a.wickets > b.wickets
-            StatCategory.STRIKE_RATE -> a.strikeRate > b.strikeRate
-            StatCategory.ECONOMY -> a.economy < b.economy
+        if (correct) {
+            if (selected == "A") {
+                binding.cardViewSelectA.setCardBackgroundColor(correctColor)
+            } else {
+                binding.cardViewSelectB.setCardBackgroundColor(correctColor)
+            }
+        } else {
+            if (selected == "A") {
+                binding.cardViewSelectA.setCardBackgroundColor(wrongColor)
+            } else {
+                binding.cardViewSelectB.setCardBackgroundColor(wrongColor)
+            }
         }
-
-        return if (selected == "A") correct else !correct
-    }
-
-    private fun showResult(correct: Boolean) {
-
-        val color = if (correct) "#4CAF50" else "#F44336"
-
-        binding.cardViewSelectA.setCardBackgroundColor(Color.parseColor(color))
-        binding.cardViewSelectB.setCardBackgroundColor(Color.parseColor(color))
     }
 
     private fun resetUI() {

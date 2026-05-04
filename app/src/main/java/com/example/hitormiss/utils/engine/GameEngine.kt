@@ -3,6 +3,7 @@ package com.example.hitormiss.utils.engine
 import com.example.hitormiss.data.entity.Player
 import com.example.hitormiss.data.entity.PlayerStatsSummary
 import com.example.hitormiss.data.repository.PlayerRepository
+import com.example.hitormiss.utils.getPlayers
 
 class GameEngine(
     private val repository: PlayerRepository
@@ -16,20 +17,32 @@ class GameEngine(
 
         var statsA: PlayerStatsSummary?
         var statsB: PlayerStatsSummary?
+        repeat(50) {
 
-        do {
-            playerA = players.random()
-            playerB = players.random()
+            val playerA = players.random()
+            val playerB = players.random()
 
-            statsA = repository.getPlayerStats(playerA.id)
-            statsB = repository.getPlayerStats(playerB.id)
+            val statsA = repository.getPlayerStats(playerA.id)
+            val statsB = repository.getPlayerStats(playerB.id)
 
-        } while (
-            playerA.id == playerB.id ||
-            statsA == null ||
-            statsB == null ||
-            !isValidPair(category, statsA, statsB)
-        )
+            if (
+                playerA.id != playerB.id &&
+                statsA != null &&
+                statsB != null &&
+                isValidPair(category, statsA, statsB)
+            ) {
+                return GameQuestion(
+                    category = category,
+                    playerA = playerA,
+                    playerB = playerB,
+                    playerAStats = statsA,
+                    playerBStats = statsB,
+                    questionText = buildQuestionText(category)
+                )
+            }
+        }
+
+        throw Exception("Unable to generate valid question")
 
         return GameQuestion(
             category = category,
@@ -90,6 +103,9 @@ class GameEngine(
             StatCategory.ECONOMY ->
                 kotlin.math.abs(a.economy - b.economy) <= 2.5f
         }
+    }
+    suspend fun syncData() {
+        repository.syncPlayers(getPlayers())
     }
 
     private fun buildQuestionText(category: StatCategory): String {
