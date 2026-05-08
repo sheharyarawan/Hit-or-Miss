@@ -12,7 +12,7 @@ import com.example.hitormiss.data.entity.PlayerStatsSummary
         Player::class,
         PlayerStatsSummary::class
     ],
-    version = 1,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -36,6 +36,8 @@ abstract class AppDatabase : RoomDatabase() {
             context.applicationContext,
             AppDatabase::class.java,
             name = "Cricket_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }
