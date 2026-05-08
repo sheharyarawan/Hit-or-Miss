@@ -69,7 +69,7 @@ class GameViewModel(
         _state.value = current.copy(score = newScore)
     }
 
-    // ✅ FIXED: moved here so Fragment compiles
+
     fun checkAnswer(question: GameQuestion, selected: String): Boolean {
 
         val a = question.playerAStats
