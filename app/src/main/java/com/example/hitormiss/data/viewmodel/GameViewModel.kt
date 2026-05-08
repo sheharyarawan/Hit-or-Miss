@@ -4,20 +4,31 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hitormiss.utils.engine.GameEngine
+import com.example.hitormiss.domain.usecase.GenerateQuestionUseCase
 import com.example.hitormiss.utils.engine.GameQuestion
 import com.example.hitormiss.utils.engine.StatCategory
+import com.example.hitormiss.utils.MatchFormat
 import kotlinx.coroutines.launch
 
 class GameViewModel(
-    private val gameEngine: GameEngine
+    private val generateQuestionUseCase: GenerateQuestionUseCase
 ) : ViewModel() {
 
     private val _state = MutableLiveData(GameState())
     val state: LiveData<GameState> = _state
-    private var currentCategory: StatCategory? = null
 
-    fun loadQuestion(category: StatCategory) {
+    private var currentCategory: StatCategory? = null
+    private var currentFormat: MatchFormat = MatchFormat.TEST
+
+    fun startGame(category: StatCategory, format: MatchFormat) {
+        currentCategory = category
+        currentFormat = format
+        loadQuestion()
+    }
+
+    fun loadQuestion() {
+
+        val category = currentCategory ?: return
 
         viewModelScope.launch {
 
@@ -28,7 +39,7 @@ class GameViewModel(
 
             try {
 
-                val question = gameEngine.generateQuestion(category)
+                val question = generateQuestionUseCase.execute(category)
 
                 _state.value = _state.value?.copy(
                     isLoading = false,
@@ -44,62 +55,77 @@ class GameViewModel(
             }
         }
     }
-    fun nextQuestion(category: StatCategory) {
-        loadQuestion(category)
+
+    fun nextQuestion() {
+        loadQuestion()
     }
 
     fun updateScore(isCorrect: Boolean) {
 
         val current = _state.value ?: return
 
-        val newScore = if (isCorrect) {
-            current.score + 1
-        } else {
-            current.score
-        }
+        val newScore = if (isCorrect) current.score + 1 else current.score
 
-        _state.value = current.copy(
-            score = newScore
-        )
+        _state.value = current.copy(score = newScore)
     }
 
-    fun startGame(category: StatCategory) {
-
-        currentCategory = category
-
-        viewModelScope.launch {
-            try {
-                gameEngine.syncData()   // 👈 we’ll add this
-                loadQuestion(category)
-            } catch (e: Exception) {
-                _state.value = _state.value?.copy(
-                    error = e.message
-                )
-            }
-        }
-    }
-
-    fun nextQuestion() {
-        currentCategory?.let {
-            loadQuestion(it)
-        }
-    }
-
+    // ✅ FIXED: moved here so Fragment compiles
     fun checkAnswer(question: GameQuestion, selected: String): Boolean {
 
         val a = question.playerAStats
         val b = question.playerBStats
 
         val correct = when (question.category) {
-
-            StatCategory.RUNS -> a.runs > b.runs
-            StatCategory.SIXES -> a.sixes > b.sixes
-            StatCategory.FOURS -> a.fours > b.fours
-            StatCategory.WICKETS -> a.wickets > b.wickets
-            StatCategory.STRIKE_RATE -> a.strikeRate > b.strikeRate
-            StatCategory.ECONOMY -> a.economy < b.economy
+            StatCategory.RUNS -> getRuns(a) > getRuns(b)
+            StatCategory.SIXES -> getSixes(a) > getSixes(b)
+            StatCategory.FOURS -> getFours(a) > getFours(b)
+            StatCategory.WICKETS -> getWickets(a) > getWickets(b)
+            StatCategory.STRIKE_RATE -> getStrikeRate(a) > getStrikeRate(b)
+            StatCategory.ECONOMY -> getEconomy(a) < getEconomy(b)
         }
 
         return if (selected == "A") correct else !correct
     }
+
+    private fun getRuns(s: com.example.hitormiss.data.entity.PlayerStatsSummary): Int =
+        when (currentFormat) {
+            MatchFormat.TEST -> s.testRuns
+            MatchFormat.ODI -> s.odiRuns
+            MatchFormat.T20I -> s.t20iRuns
+        }
+
+    private fun getFours(s: com.example.hitormiss.data.entity.PlayerStatsSummary): Int =
+        when (currentFormat) {
+            MatchFormat.TEST -> s.testFours
+            MatchFormat.ODI -> s.odiFours
+            MatchFormat.T20I -> s.t20iFours
+        }
+
+    private fun getSixes(s: com.example.hitormiss.data.entity.PlayerStatsSummary): Int =
+        when (currentFormat) {
+            MatchFormat.TEST -> s.testSixes
+            MatchFormat.ODI -> s.odiSixes
+            MatchFormat.T20I -> s.t20iSixes
+        }
+
+    private fun getWickets(s: com.example.hitormiss.data.entity.PlayerStatsSummary): Int =
+        when (currentFormat) {
+            MatchFormat.TEST -> s.testWickets
+            MatchFormat.ODI -> s.odiWickets
+            MatchFormat.T20I -> s.t20iWickets
+        }
+
+    private fun getStrikeRate(s: com.example.hitormiss.data.entity.PlayerStatsSummary): Float =
+        when (currentFormat) {
+            MatchFormat.TEST -> s.testStrikeRate
+            MatchFormat.ODI -> s.odiStrikeRate
+            MatchFormat.T20I -> s.t20iStrikeRate
+        }
+
+    private fun getEconomy(s: com.example.hitormiss.data.entity.PlayerStatsSummary): Float =
+        when (currentFormat) {
+            MatchFormat.TEST -> s.testEconomy
+            MatchFormat.ODI -> s.odiEconomy
+            MatchFormat.T20I -> s.t20iEconomy
+        }
 }
