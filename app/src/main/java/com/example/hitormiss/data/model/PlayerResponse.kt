@@ -1,7 +1,7 @@
 package com.example.hitormiss.data.model
 
-data class PlayerData(
+data class PlayerResponse(
     val apikey: String,
-    val playerInfo: PlayerInfo,
+    val data: PlayerInfo,
     val status: String
 )
