@@ -2,28 +2,23 @@ package com.example.hitormiss.utils.engine
 
 import com.example.hitormiss.data.entity.Player
 import com.example.hitormiss.data.entity.PlayerStatsSummary
-import com.example.hitormiss.data.repository.PlayerRepository
-import com.example.hitormiss.utils.getPlayers
+import kotlin.math.abs
 
-class GameEngine(
-    private val repository: PlayerRepository
-) {
-    suspend fun generateQuestion(category: StatCategory): GameQuestion {
+class GameEngine {
 
-        val players = getEligiblePlayers(category)
+    fun generateQuestion(
+        category: StatCategory,
+        players: List<Player>,
+        statsMap: Map<String, PlayerStatsSummary>
+    ): GameQuestion {
 
-        var playerA: Player
-        var playerB: Player
-
-        var statsA: PlayerStatsSummary?
-        var statsB: PlayerStatsSummary?
         repeat(50) {
 
             val playerA = players.random()
             val playerB = players.random()
 
-            val statsA = repository.getPlayerStats(playerA.id)
-            val statsB = repository.getPlayerStats(playerB.id)
+            val statsA = statsMap[playerA.id]
+            val statsB = statsMap[playerB.id]
 
             if (
                 playerA.id != playerB.id &&
@@ -42,7 +37,19 @@ class GameEngine(
             }
         }
 
-        throw Exception("Unable to generate valid question")
+        val playersWithStats = players.filter { statsMap[it.id] != null }
+        if (playersWithStats.size < 2) {
+            throw Exception("Not enough player data to create a question")
+        }
+
+        var playerA = playersWithStats.random()
+        var playerB = playersWithStats.random()
+        while (playerA.id == playerB.id) {
+            playerB = playersWithStats.random()
+        }
+
+        val statsA = statsMap[playerA.id]!!
+        val statsB = statsMap[playerB.id]!!
 
         return GameQuestion(
             category = category,
@@ -54,29 +61,6 @@ class GameEngine(
         )
     }
 
-    private suspend fun getEligiblePlayers(category: StatCategory): List<Player> {
-
-        val batsmen = repository.getBatsmen()
-        val bowlers = repository.getBowlers()
-        val wk = repository.getWicketKeepers()
-        val allRounders = repository.getAllRounders()
-
-        return when (category) {
-
-            StatCategory.RUNS,
-            StatCategory.SIXES,
-            StatCategory.FOURS,
-            StatCategory.STRIKE_RATE -> {
-                batsmen + allRounders + wk
-            }
-
-            StatCategory.WICKETS,
-            StatCategory.ECONOMY -> {
-                bowlers + allRounders
-            }
-        }
-    }
-
     private fun isValidPair(
         category: StatCategory,
         a: PlayerStatsSummary,
@@ -86,26 +70,23 @@ class GameEngine(
         return when (category) {
 
             StatCategory.RUNS ->
-                kotlin.math.abs(a.runs - b.runs) <= 120
+                abs(a.runs - b.runs) <= 120
 
             StatCategory.SIXES ->
-                kotlin.math.abs(a.sixes - b.sixes) <= 20
+                abs(a.sixes - b.sixes) <= 20
 
             StatCategory.FOURS ->
-                kotlin.math.abs(a.fours - b.fours) <= 25
+                abs(a.fours - b.fours) <= 25
 
             StatCategory.WICKETS ->
-                kotlin.math.abs(a.wickets - b.wickets) <= 10
+                abs(a.wickets - b.wickets) <= 10
 
             StatCategory.STRIKE_RATE ->
-                kotlin.math.abs(a.strikeRate - b.strikeRate) <= 25
+                abs(a.strikeRate - b.strikeRate) <= 25
 
             StatCategory.ECONOMY ->
-                kotlin.math.abs(a.economy - b.economy) <= 2.5f
+                abs(a.economy - b.economy) <= 2.5f
         }
-    }
-    suspend fun syncData() {
-        repository.syncPlayers(getPlayers())
     }
 
     private fun buildQuestionText(category: StatCategory): String {
