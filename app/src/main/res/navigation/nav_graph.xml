@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeScreenFragment">
+    app:startDestination="@id/formatFragment">
 
     <fragment
         android:id="@+id/homeScreenFragment"
@@ -11,6 +11,14 @@
         <action
             android:id="@+id/action_homeScreenFragment_to_gameFragment"
             app:destination="@id/gameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/formatFragment"
+        android:name="com.example.hitormiss.ui.FormatFragment"
+        android:label="FormatFragment" >
+        <action
+            android:id="@+id/action_formatFragment_to_homeScreenFragment"
+            app:destination="@id/homeScreenFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameFragment"
