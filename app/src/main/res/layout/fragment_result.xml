@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/resultToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Result" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/accuracyTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accuracy"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:fontFamily="@font/poppins_bold" />
+
+            <TextView
+                android:id="@+id/accuracyValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="0/0"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins" />
+
+            <TextView
+                android:id="@+id/xpValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="XP gained: 0"
+                android:textSize="18sp"
+                android:fontFamily="@font/poppins" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/backToHomeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Back to Home"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins"
+        android:textSize="18sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/playAgainButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:text="Play again"
+        android:backgroundTint="#E6E6E6"
+        android:textColor="@color/black"
+        android:fontFamily="@font/poppins"
+        android:textSize="18sp" />
+
+</LinearLayout>
+
