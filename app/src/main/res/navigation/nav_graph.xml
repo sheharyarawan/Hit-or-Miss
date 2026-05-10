@@ -23,5 +23,18 @@
     <fragment
         android:id="@+id/gameFragment"
         android:name="com.example.hitormiss.ui.game.GameFragment"
-        android:label="GameFragment" />
+        android:label="GameFragment" >
+        <action
+            android:id="@+id/action_gameFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.example.hitormiss.ui.ResultFragment"
+        android:label="ResultFragment" >
+        <action
+            android:id="@+id/action_resultFragment_to_formatFragment"
+            app:destination="@id/formatFragment" />
+    </fragment>
 </navigation>
