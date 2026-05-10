@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.cardview.widget.CardView
 import com.example.hitormiss.R
+import com.google.android.material.appbar.MaterialToolbar
 
 class FormatFragment : Fragment() {
 
@@ -20,6 +21,11 @@ class FormatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<MaterialToolbar>(R.id.formatToolbar)?.apply {
+            title = ""
+            setNavigationIcon(R.drawable.hm_logo)
+        }
 
         val cardT20 = view.findViewById<CardView>(R.id.formatCardT20)
         val cardOdi = view.findViewById<CardView>(R.id.formatCardOdi)

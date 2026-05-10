@@ -19,6 +19,8 @@ class HomeScreenFragment : Fragment(R.layout.fragment_home_screen) {
 
         _binding = FragmentHomeScreenBinding.bind(view)
         format = arguments?.getString("format")
+        binding.gameToolbar.title = ""
+        binding.gameToolbar.setNavigationIcon(R.drawable.hm_logo)
 
         setupClicks()
     }
