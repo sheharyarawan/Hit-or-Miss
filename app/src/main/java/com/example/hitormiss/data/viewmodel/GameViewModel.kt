@@ -65,8 +65,29 @@ class GameViewModel(
         val current = _state.value ?: return
 
         val newScore = if (isCorrect) current.score + 1 else current.score
+        val newTotal = current.totalAnswered + 1
+        val newCorrect = if (isCorrect) current.correctAnswered + 1 else current.correctAnswered
+        val newXp = if (isCorrect) current.xp + 10 else current.xp
+        val newWrong = if (isCorrect) current.wrongCount else current.wrongCount + 1
 
-        _state.value = current.copy(score = newScore)
+        _state.value = current.copy(
+            score = newScore,
+            totalAnswered = newTotal,
+            correctAnswered = newCorrect,
+            xp = newXp,
+            wrongCount = newWrong
+        )
+    }
+
+    fun resetRun() {
+        val current = _state.value ?: GameState()
+        _state.value = current.copy(
+            score = 0,
+            totalAnswered = 0,
+            correctAnswered = 0,
+            xp = 0,
+            wrongCount = 0
+        )
     }
 
 
