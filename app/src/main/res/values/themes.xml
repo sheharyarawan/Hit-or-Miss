@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.HitOrMiss" parent="Base.Theme.HitOrMiss" />
+
+    <style name="Theme.HitOrMiss.Splash" parent="Theme.HitOrMiss">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:navigationBarColor">@color/white</item>
+    </style>
 </resources>
