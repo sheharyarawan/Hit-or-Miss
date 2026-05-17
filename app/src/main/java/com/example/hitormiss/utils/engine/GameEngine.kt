@@ -70,19 +70,19 @@ class GameEngine {
         return when (category) {
 
             StatCategory.RUNS ->
-                abs(a.runs - b.runs) <= 120
+                abs(a.runs - b.runs) <= 5000
 
             StatCategory.SIXES ->
-                abs(a.sixes - b.sixes) <= 20
+                abs(a.sixes - b.sixes) <= 200
 
             StatCategory.FOURS ->
-                abs(a.fours - b.fours) <= 25
+                abs(a.fours - b.fours) <= 250
 
             StatCategory.WICKETS ->
-                abs(a.wickets - b.wickets) <= 10
+                abs(a.wickets - b.wickets) <= 400
 
             StatCategory.STRIKE_RATE ->
-                abs(a.strikeRate - b.strikeRate) <= 25
+                abs(a.strikeRate - b.strikeRate) <= 35
 
             StatCategory.ECONOMY ->
                 abs(a.economy - b.economy) <= 2.5f
