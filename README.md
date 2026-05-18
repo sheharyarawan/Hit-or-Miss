@@ -68,34 +68,6 @@ CRICKET_API_KEY=your_api_key_here
 
 ---
 
-## Screenshots
-
-> Add your screenshots inside a `screenshots/` folder in the repo root.
-
-### Splash Screen
-![Splash Screen](screenshots/splash.png)
-
----
-
-### Choose Format
-![Choose Format](screenshots/format.png)
-
----
-
-### Home Screen
-![Home Screen](screenshots/home.png)
-
----
-
-### Game Screen
-![Game Screen](screenshots/game.png)
-
----
-
-### Result Screen
-![Result Screen](screenshots/result.png)
-
----
 
 ## How to Run Project
 
